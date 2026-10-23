@@ -1,0 +1,50 @@
+LISTADO DE IMÁGENES - Alma Estética & Spa
+==========================================
+
+Total: 14 fotos
+Carpeta destino: Estetica\img\
+
+Cómo usar: sacá la foto, renombrala con el nombre exacto de la
+columna "NOMBRE" (respetando minúsculas y guiones) y copiala en
+la carpeta img\. Después ejecutá verificar-imagenes.bat para
+comprobar que estén todas.
+
+HERO (1 foto)
+-------------
+[ ] hero-estetica.jpg      Sala de tratamientos del spa
+                           Medida: 880 x 1100 px (vertical, formato 4:5)
+
+NOSOTROS (1 foto)
+-----------------
+[ ] about-salon.jpg        Especialista realizando un tratamiento facial
+                           Medida: 700 x 875 px (vertical, formato 4:5)
+
+SERVICIOS (6 fotos - todas horizontales 4:3)
+---------------------------------------------
+[ ] servicio-manicura.jpg  Manicura en proceso (manos trabajando)
+[ ] servicio-depilacion.jpg Sala/box de depilación
+[ ] servicio-facial.jpg    Tratamiento facial en camilla
+[ ] servicio-masajes.jpg   Sala de masajes con piedras y aceites
+[ ] servicio-maquillaje.jpg Set de maquillaje profesional
+[ ] servicio-peinado.jpg   Peinado y coloración en salón
+                           Medida de todas: 500 x 375 px
+
+GALERÍA (6 fotos - todas cuadradas 1:1)
+----------------------------------------
+[ ] galeria-01.jpg         Recepción del local
+[ ] galeria-02.jpg         Sala de manicura
+[ ] galeria-03.jpg         Camilla de tratamientos faciales
+[ ] galeria-04.jpg         Set de productos de spa
+[ ] galeria-05.jpg         Sala de masajes con luz tenue
+[ ] galeria-06.jpg         Especialista haciendo un peinado
+                           Medida de todas: 600 x 600 px
+
+CONSEJOS
+--------
+- Formato .jpg en minúsculas (el código es sensible a mayúsculas).
+- Comprimí cada foto a menos de 200 KB en https://squoosh.app
+- Respetá las proporciones (verticales, horizontales o cuadradas)
+  para que las imágenes no queden deformadas al mostrarlas.
+- La foto del hero es la más importante: es lo primero que se ve
+  al entrar al sitio y también se usa para redes sociales (OG)
+  y para Google.

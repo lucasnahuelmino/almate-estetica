@@ -1,0 +1,930 @@
+/* ==========================================================================
+   ALMA ESTÉTICA & SPA — style.css
+   ETAPA 2: Diseño visual
+
+   Cómo está organizado este archivo (de arriba a abajo):
+     1. Variables (el "panel de control" visual del sitio)
+     2. Reset básico
+     3. Tipografía base
+     4. Utilidades (contenedor, section-label, botones)
+     5. Header
+     6. Hero
+     7. Nosotros
+     8. Servicios
+     9. Galería + Lightbox
+     10. Testimonios
+     11. Reservar turno (formulario)
+     12. Ubicación
+     13. Footer + firma ALMATE
+     14. Botón flotante de WhatsApp
+
+   Todavía NO hay media queries de responsive "fino" (eso es la Etapa 3)
+   ni animaciones de scroll (eso es la Etapa 5). Lo que sí incluye este
+   archivo es un layout mobile-first funcional: en pantallas chicas todo
+   se apila en una columna, y a partir de cierto ancho pasamos a 2
+   columnas en las secciones que lo necesitan.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. VARIABLES
+   Esto es lo único que necesitás tocar para cambiarle la identidad visual
+   a una copia de esta plantilla para otro cliente/rubro.
+
+   Primera plantilla del sistema con FONDO CLARO (las otras dos — Brasa
+   Urbana y Ferretería El Yunque — son de fondo oscuro). El sistema de
+   variables ya estaba preparado para esto desde la Etapa 8: no hizo
+   falta tocar ningún componente, solo estos valores.
+   ========================================================================== */
+:root {
+  /* Colores — paleta suave: blush + carbón cálido. */
+  --color-background: #FAF4F1;   /* blush claro — fondo general */
+  --color-background-rgb: 250, 244, 241; /* mismo color, en "r, g, b" — se usa
+     dentro de rgba() para el header y el lightbox (ver más abajo). Si
+     cambiás --color-background, actualizá este valor también. */
+  --color-surface:    #FFFFFF;   /* panel — tarjetas, footer, header */
+  --color-text:       #2B2320;   /* carbón cálido — texto principal sobre fondo claro */
+  --color-text-muted: #8C7A74;   /* topo — texto secundario */
+  --color-accent:     #C96E88;   /* rosa viejo — acento, botones, links activos */
+  --color-accent-dark:#A84F6B;   /* rosa oscuro — hover de acento */
+  --color-on-accent:  #FFFFFF;   /* texto sobre botones/fondos de acento — acá
+     SÍ es blanco (a diferencia de las otras dos plantillas), porque el
+     rosa de acento es oscuro: un blanco limpio da mejor contraste que
+     el carbón del texto principal. Esta es la variable pensada
+     exactamente para este caso — ver el comentario en la Etapa de
+     corrección del sistema. */
+  --color-border:     #EDE0DB;   /* línea divisoria sutil sobre el fondo claro */
+
+  /* Marca ALMATE — fija, no depende del cliente. La firma del footer
+     ("Built with ALMATE") usa este color en TODOS los sitios que
+     construyas, para que tu estudio se vea siempre igual sin importar
+     la paleta de cada cliente.
+     ⚠️ El azul exacto no venía con código de color en el brandbook que
+     me pasaste (los otros 3 colores sí tenían hex) — dejé un electric
+     blue estándar como placeholder. Reemplazalo por el HEX real de tu
+     manual de marca apenas lo tengas. */
+  --almate-accent: #1E6FFF;      /* electric blue — placeholder, confirmar HEX real */
+
+  /* Scrim del lightbox — SIEMPRE oscuro, fijo, independiente de la
+     paleta del sitio. El fondo oscurecido detrás de una foto ampliada
+     tiene que seguir siendo oscuro aunque el sitio sea de fondo claro
+     (como este). Por eso NO reutiliza --color-background-rgb: en una
+     plantilla de fondo oscuro coincidirían por casualidad, pero en
+     una de fondo claro el overlay se volvería casi invisible. */
+  --scrim-rgb: 10, 8, 6;
+
+  /* Tipografía — Cormorant Garamond (delicada, elegante) reemplaza a
+     Fraunces: encaja mejor con un spa que una serif de peso editorial. */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Manrope", -apple-system, sans-serif;
+
+  /* Layout */
+  --container-width: 1180px;
+  --container-padding: clamp(1.25rem, 4vw, 3rem);
+  --section-spacing: clamp(3.5rem, 8vw, 7rem);
+  --radius-sm: 3px;
+}
+
+
+/* ==========================================================================
+   2. RESET BÁSICO
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  overflow-x: hidden; /* red de seguridad: nada debe generar scroll horizontal */
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Estado de foco visible para navegación por teclado (accesibilidad) */
+a:focus-visible,
+button:focus-visible,
+iframe:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   3. TIPOGRAFÍA BASE
+   ========================================================================== */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  color: var(--color-text);
+}
+
+h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); }
+h2 { font-size: clamp(1.9rem, 4vw, 2.75rem); }
+h3 { font-size: 1.25rem; font-weight: 600; }
+
+p {
+  margin: 0 0 1em;
+  max-width: 62ch;
+}
+
+
+/* ==========================================================================
+   4. UTILIDADES
+   ========================================================================== */
+
+/* Cada section-label es una etiqueta editorial: serif, itálica, en el
+   color de acento. No usamos mayúsculas sostenidas ni tracking exagerado
+   — la idea es que se sienta a una bajada de copete de revista, no a un
+   "chip" de interfaz genérica. */
+.section-label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-accent);
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+main > section {
+  padding: var(--section-spacing) var(--container-padding);
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.85em 1.75em;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn--primary {
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+.btn--primary:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.btn--secondary {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.btn--secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn--whatsapp {
+  background-color: transparent;
+  border: 1px solid #3DA35D;
+  color: #3DA35D;
+}
+.btn--whatsapp:hover {
+  background-color: #3DA35D;
+  color: var(--color-on-accent);
+}
+
+
+/* ==========================================================================
+   5. HEADER
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(var(--color-background-rgb), 0.9);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow 0.25s ease;
+}
+
+/* La clase la agrega el JS de la Etapa 4 al bajar la página: un poco
+   más de presencia (sombra sutil), sin cambiar el layout. */
+.site-header.is-scrolled {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.header__inner {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 1.1rem var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.header__logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* En mobile, <nav id="header-nav"> es un panel que cuelga debajo del
+   header y está colapsado por default (max-height: 0). La Etapa 4
+   solo necesita agregar/quitar la clase `.header__nav--open` — todo
+   el aspecto visual del panel ya queda resuelto acá. */
+.header__nav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.header__nav.header__nav--open {
+  max-height: 24rem;
+}
+
+.header__nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 1.5rem var(--container-padding) 1.75rem;
+}
+
+.header__nav-list a {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
+}
+.header__nav-list a:hover {
+  color: var(--color-text);
+}
+
+.header__cta {
+  display: none; /* aparece en desktop, ver breakpoint más abajo */
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  padding: 0.6em 1.4em;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.header__menu-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0.5rem;
+}
+.menu-toggle__bar {
+  width: 22px;
+  height: 2px;
+  background-color: var(--color-text);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Estado abierto del ícono hamburguesa → X (la clase la agrega el JS
+   de la Etapa 4, pero el CSS ya está listo). */
+.header__menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.header__menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(2) {
+  opacity: 0;
+}
+.header__menu-toggle[aria-expanded="true"] .menu-toggle__bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (min-width: 860px) {
+  .header__nav {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    background: none;
+    border-bottom: none;
+  }
+  .header__nav-list {
+    flex-direction: row;
+    gap: 2rem;
+    padding: 0;
+  }
+  .header__cta { display: inline-block; }
+  .header__menu-toggle { display: none; }
+}
+
+
+/* ==========================================================================
+   6. HERO
+   ========================================================================== */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 2.5rem;
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+}
+
+.hero__eyebrow {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--color-accent);
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero__title {
+  margin-bottom: 0.4em;
+}
+
+.hero__subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  max-width: 46ch;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.hero__media img {
+  border-radius: var(--radius-sm);
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 4rem;
+  }
+}
+
+
+/* ==========================================================================
+   7. NOSOTROS
+   ========================================================================== */
+.about {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.about__media img {
+  border-radius: var(--radius-sm);
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.about__content p {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 860px) {
+  .about {
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 4rem;
+  }
+}
+
+
+/* ==========================================================================
+   8. SERVICIOS
+   ========================================================================== */
+.menu__title {
+  margin-bottom: 2.5rem;
+}
+
+.menu__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem 2rem;
+}
+
+.menu-card img {
+  border-radius: var(--radius-sm);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  transition: transform 0.4s ease;
+}
+
+.menu-card:hover img {
+  transform: scale(1.03);
+}
+
+.menu-card h3 {
+  margin-bottom: 0.35em;
+  transition: color 0.2s ease;
+}
+
+.menu-card:hover h3 {
+  color: var(--color-accent);
+}
+
+.menu-card p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.6em;
+}
+
+.menu-card__price {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--color-accent);
+  font-size: 0.95rem;
+}
+
+.menu-card__book {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.menu-card__book:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+@media (min-width: 640px) {
+  .menu__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 980px) {
+  .menu__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+
+/* ==========================================================================
+   9. GALERÍA + LIGHTBOX
+   ========================================================================== */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.gallery__item {
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  aspect-ratio: 1 / 1;
+}
+
+.gallery__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.gallery__item:hover img {
+  transform: scale(1.04);
+}
+
+/* Composición un poco más editorial en desktop: dos imágenes ocupan
+   más espacio que el resto, en vez de un grid perfectamente uniforme. */
+@media (min-width: 700px) {
+  .gallery__grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 220px;
+  }
+  .gallery__item:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .gallery__item:nth-child(4) {
+    grid-column: span 2;
+  }
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(var(--scrim-rgb), 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+.lightbox.lightbox--open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-sm);
+  transform: scale(0.96);
+  transition: transform 0.25s ease;
+}
+.lightbox.lightbox--open img {
+  transform: scale(1);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-text);
+}
+
+
+/* ==========================================================================
+   10. TESTIMONIOS
+   ========================================================================== */
+.testimonials__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.testimonial-card {
+  margin: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  transition: border-color 0.3s ease;
+}
+
+.testimonial-card:hover {
+  border-top-color: var(--color-accent);
+}
+
+.testimonial-card__rating {
+  color: var(--color-accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.testimonial-card__text {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--color-text);
+}
+
+.testimonial-card__author {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+/* Tablet: 2 columnas como paso intermedio antes de las 3 de desktop,
+   para que el salto de 1 a 3 no se sienta tan brusco. */
+@media (min-width: 640px) and (max-width: 859px) {
+  .testimonials__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 860px) {
+  .testimonials__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+
+/* ==========================================================================
+   11. RESERVAR TURNO (formulario)
+   No hay backend: el formulario arma un mensaje de WhatsApp con los
+   datos cargados y abre wa.me en una pestaña nueva — el negocio
+   confirma el turno a mano. Ver script.js para la lógica.
+   ========================================================================== */
+.booking__intro {
+  color: var(--color-text-muted);
+  max-width: 50ch;
+  margin-bottom: 2rem;
+}
+
+.booking__form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.booking__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.booking__field--full {
+  grid-column: 1 / -1;
+}
+
+.booking__field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.booking__field input,
+.booking__field select,
+.booking__field textarea {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75em 0.9em;
+  transition: border-color 0.2s ease;
+}
+
+.booking__field input:focus,
+.booking__field select:focus,
+.booking__field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.booking__field textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.booking__submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+  border: none;
+}
+
+@media (min-width: 640px) {
+  .booking__form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+
+/* ==========================================================================
+   12. UBICACIÓN
+   ========================================================================== */
+.location {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+.location__details {
+  margin: 1.5rem 0 2rem;
+  display: grid;
+  gap: 1.1rem;
+}
+.location__details dt {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.15em;
+}
+.location__details dd {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.location__map iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: var(--radius-sm);
+}
+
+@media (min-width: 900px) {
+  .location { grid-template-columns: 0.9fr 1.1fr; }
+}
+
+
+/* ==========================================================================
+   13. FOOTER + FIRMA ALMATE
+   ========================================================================== */
+.site-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: var(--section-spacing) var(--container-padding) 2rem;
+}
+
+.footer__top {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.footer__logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin: 0 0 0.3em;
+}
+
+.footer__brand p:last-child {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.footer__nav ul {
+  display: grid;
+  gap: 0.6rem;
+}
+.footer__nav a {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+.footer__nav a:hover {
+  color: var(--color-text);
+}
+
+.footer__contact p {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4em;
+}
+.footer__social {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.footer__social a {
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.footer__bottom {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footer__bottom p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* La firma ALMATE: chica, discreta, con una marca geométrica simple
+   dibujada solo con CSS (un triángulo — un guiño al isotipo de montaña
+   del logo, sin reproducirlo completo). No compite con la marca del
+   cliente — mismo tamaño que el copyright, y usa SIEMPRE el mismo azul
+   (--almate-accent), no el color de acento del cliente, para que tu
+   firma se vea igual en cualquier sitio que construyas. */
+.almate-signature {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
+}
+.almate-signature:hover {
+  color: var(--almate-accent);
+}
+.almate-signature__mark {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid var(--almate-accent);
+  transition: transform 0.3s ease;
+}
+.almate-signature:hover .almate-signature__mark {
+  transform: translateY(-2px);
+}
+
+@media (min-width: 700px) {
+  .footer__top { grid-template-columns: 1.2fr 1fr 1fr; }
+}
+
+
+/* ==========================================================================
+   14. BOTÓN FLOTANTE DE WHATSAPP
+   ========================================================================== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background-color: #3DA35D;
+  color: var(--color-on-accent);
+  padding: 0.75em 1.25em;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  z-index: 40;
+}
+.whatsapp-float[hidden] { display: none; }
+
+
+/* ==========================================================================
+   15. ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+   Si la persona configuró su sistema para minimizar animaciones,
+   respetamos esa preferencia en todo el sitio.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+
+/* ==========================================================================
+   16. APARICIÓN DE ELEMENTOS AL HACER SCROLL
+   El JS le agrega `.reveal` a los bloques que queremos que "entren" y
+   los observa con IntersectionObserver. Acá solo definimos los dos
+   estados (antes / después) — un único movimiento, discreto y
+   consistente en todo el sitio: aparece y sube 16px, nada más.
+
+   Los hijos directos de un grid (tarjetas de menú, fotos, testimonios)
+   entran con una pequeña cascada usando --reveal-delay, para que no
+   aparezcan todos exactamente al mismo tiempo.
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu__grid .reveal:nth-child(1) { --reveal-delay: 0s; }
+.menu__grid .reveal:nth-child(2) { --reveal-delay: 0.06s; }
+.menu__grid .reveal:nth-child(3) { --reveal-delay: 0.12s; }
+.menu__grid .reveal:nth-child(4) { --reveal-delay: 0.06s; }
+.menu__grid .reveal:nth-child(5) { --reveal-delay: 0.12s; }
+.menu__grid .reveal:nth-child(6) { --reveal-delay: 0.18s; }
+
+.gallery__grid .reveal:nth-child(2) { --reveal-delay: 0.05s; }
+.gallery__grid .reveal:nth-child(3) { --reveal-delay: 0.1s; }
+.gallery__grid .reveal:nth-child(4) { --reveal-delay: 0.05s; }
+.gallery__grid .reveal:nth-child(5) { --reveal-delay: 0.1s; }
+.gallery__grid .reveal:nth-child(6) { --reveal-delay: 0.15s; }
+
+.testimonials__grid .reveal:nth-child(2) { --reveal-delay: 0.08s; }
+.testimonials__grid .reveal:nth-child(3) { --reveal-delay: 0.16s; }

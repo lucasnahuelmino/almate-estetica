@@ -1,0 +1,13 @@
+# Archivos de sistema / de Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+*.swp
+
+# Archivos temporales
+*.tmp
+*.log
