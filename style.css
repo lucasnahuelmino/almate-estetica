@@ -13,7 +13,7 @@
      8. Servicios
      9. Galería + Lightbox
      10. Testimonios
-     11. Reservar turno (formulario)
+     11. Reservar turno (agenda externa)
      12. Ubicación
      13. Footer + firma ALMATE
      14. Botón flotante de WhatsApp
@@ -636,10 +636,7 @@ main > section {
 
 
 /* ==========================================================================
-   11. RESERVAR TURNO (formulario)
-   No hay backend: el formulario arma un mensaje de WhatsApp con los
-   datos cargados y abre wa.me en una pestaña nueva — el negocio
-   confirma el turno a mano. Ver script.js para la lógica.
+   11. RESERVAR TURNO
    ========================================================================== */
 .booking__intro {
   color: var(--color-text-muted);
@@ -649,67 +646,78 @@ main > section {
 
 .booking__form {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  background-color: var(--color-surface);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: clamp(1.1rem, 3vw, 1.75rem);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
 
 .booking__field {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 0.4rem;
-}
-
-.booking__field--full {
-  grid-column: 1 / -1;
+  gap: 0.35rem;
 }
 
 .booking__field label {
-  font-size: 0.85rem;
-  font-weight: 600;
   color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .booking__field input,
 .booking__field select,
 .booking__field textarea {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--color-text);
-  background-color: var(--color-background);
+  width: 100%;
+  min-width: 0;
+  padding: 0.72rem 0.8rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0.75em 0.9em;
-  transition: border-color 0.2s ease;
+  border-radius: 9px;
+  background: #fffdfc;
+  color: var(--color-text);
+  font: 500 0.92rem var(--font-body);
 }
 
 .booking__field input:focus,
 .booking__field select:focus,
 .booking__field textarea:focus {
-  outline: none;
-  border-color: var(--color-accent);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
 }
 
 .booking__field textarea {
   resize: vertical;
-  min-height: 4.5rem;
+}
+
+.booking__feedback {
+  grid-column: 1 / -1;
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+}
+
+.booking__feedback.is-error,
+.admin-login-error,
+.admin-page-error,
+.admin-dialog-error {
+  color: #995348;
 }
 
 .booking__submit {
   grid-column: 1 / -1;
   justify-self: start;
-  border: none;
+  border: 0;
 }
 
-@media (min-width: 640px) {
-  .booking__form {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.booking__submit:disabled,
+.admin-add-button:disabled,
+.admin-dialog-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
-
 
 /* ==========================================================================
    12. UBICACIÓN
@@ -928,3 +936,815 @@ main > section {
 
 .testimonials__grid .reveal:nth-child(2) { --reveal-delay: 0.08s; }
 .testimonials__grid .reveal:nth-child(3) { --reveal-delay: 0.16s; }
+
+
+/* ==========================================================================
+   17. DEMO PERSONALIZABLE, HERO Y AGENDA ONLINE
+   ========================================================================== */
+:root {
+  --container-width: 1240px;
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+}
+
+.site-header {
+  background-color: rgba(var(--color-background-rgb), 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.site-header.is-scrolled {
+  box-shadow: 0 8px 28px rgba(43, 35, 32, 0.12);
+}
+
+.header__logo {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+.header__nav-list a {
+  font-size: 0.9rem;
+}
+
+.header__cta,
+.btn {
+  border-radius: 999px;
+}
+
+.hero {
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.hero__content {
+  padding-block: clamp(1rem, 4vw, 3rem);
+}
+
+.hero__title {
+  max-width: 10ch;
+  font-size: clamp(3.25rem, 7vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.hero__subtitle {
+  max-width: 38ch;
+}
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font: 700 0.68rem/1 var(--font-body);
+  font-style: normal;
+  letter-spacing: 0.1em;
+}
+
+.demo-badge::before {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  content: "";
+}
+
+.hero-carousel {
+  position: relative;
+  min-height: clamp(25rem, 57vw, 43rem);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: #75635b;
+  box-shadow: 0 26px 70px rgba(43, 35, 32, 0.16);
+}
+
+.hero-carousel__slides,
+.hero-carousel__slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-carousel__slide {
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.025);
+  transition: opacity 0.8s ease, transform 5.8s ease;
+}
+
+.hero-carousel__slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hero-carousel__caption {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 3.5rem clamp(1rem, 3vw, 2rem) 1.25rem;
+  background: linear-gradient(transparent, rgba(18, 15, 13, 0.68));
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.hero-carousel__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero-carousel__arrow {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 50%;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.hero-carousel__arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hero-carousel__dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.hero-carousel__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-carousel__dot.is-active {
+  background: #fff;
+  transform: scale(1.25);
+}
+
+.about__media img,
+.menu-card img,
+.gallery__item {
+  border-radius: var(--radius-lg);
+}
+
+.menu-card {
+  padding: 0.75rem 0.75rem 1.25rem;
+  border: 1px solid rgba(237, 224, 219, 0.8);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.menu-card img {
+  width: 100%;
+}
+
+.menu-card h3,
+.menu-card p,
+.menu-card__price,
+.menu-card__book {
+  margin-inline: 0.35rem;
+}
+
+.menu-card__price,
+.menu-card__book {
+  display: inline-block;
+}
+
+.booking {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.booking__content h2 {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.booking__intro {
+  margin-bottom: 1.5rem;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 859px) {
+  .booking {
+    grid-template-columns: 1fr;
+  }
+
+  .booking__form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .booking__content h2 {
+    max-width: 16ch;
+  }
+}
+
+@media (max-width: 600px) {
+  .header__inner {
+    gap: 0.5rem;
+    padding-block: 0.8rem;
+  }
+
+  .header__logo {
+    max-width: 70vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hero {
+    gap: 1.5rem;
+    padding-top: 2rem;
+  }
+
+  .hero__title {
+    max-width: 11ch;
+    font-size: clamp(3rem, 14vw, 4.25rem);
+  }
+
+  .hero__actions .btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .hero-carousel {
+    min-height: min(112vw, 31rem);
+    border-radius: 18px;
+  }
+
+  .hero-carousel__caption {
+    align-items: flex-end;
+    padding: 3.5rem 1rem 1rem;
+    font-size: 0.72rem;
+  }
+
+  .hero-carousel__controls {
+    gap: 0.45rem;
+  }
+
+  .hero-carousel__arrow {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .menu__grid {
+    gap: 1.25rem;
+  }
+
+  .menu-card {
+    padding: 0.6rem 0.6rem 1rem;
+  }
+
+  .booking__form {
+    grid-template-columns: 1fr;
+  }
+
+  .whatsapp-float {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
+
+
+/* ==========================================================================
+   18. PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+.admin-page {
+  min-height: 100vh;
+}
+
+.admin-header {
+  max-width: var(--container-width);
+}
+
+.admin-back-link,
+.admin-google-link {
+  color: var(--color-accent-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.admin-main {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4rem) var(--container-padding);
+}
+
+.admin-heading,
+.admin-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-heading {
+  margin-bottom: 1.5rem;
+}
+
+.admin-heading h1 {
+  margin-bottom: 0.2em;
+  font-size: clamp(2.6rem, 6vw, 4.5rem);
+}
+
+.admin-heading p:last-child {
+  color: var(--color-text-muted);
+}
+
+.admin-account-tag {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: #fff2dc;
+  color: #805510;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.admin-calendar-notice {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid #ead3a8;
+  border-radius: 12px;
+  background: #fff9ec;
+  color: #684e24;
+  font-size: 0.88rem;
+}
+
+.admin-calendar-notice .btn {
+  justify-self: start;
+  margin-top: 0.6rem;
+}
+
+.admin-calendar-notice.is-connected {
+  border-color: #b8d8bf;
+  background: #f0f8f1;
+  color: #28673a;
+}
+
+.admin-calendar-notice.is-error {
+  border-color: #e6c1bb;
+  background: #fff4f2;
+  color: #8a514b;
+}
+
+.admin-login-card {
+  max-width: 36rem;
+  margin: clamp(2rem, 7vw, 5rem) auto;
+}
+
+.admin-login-card h2 {
+  margin-bottom: 0.5rem;
+}
+
+.admin-login-card > p:not(.section-label) {
+  color: var(--color-text-muted);
+}
+
+.admin-login-error {
+  padding: 0.75rem 0;
+  font-size: 0.9rem;
+}
+
+.admin-login-error.is-success {
+  color: #28673a;
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1rem;
+}
+
+.admin-toolbar p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.admin-toolbar strong {
+  color: var(--color-text);
+}
+
+.admin-page-error {
+  padding: 0.8rem 1rem;
+  border: 1px solid #e6c1bb;
+  border-radius: 10px;
+  background: #fff4f2;
+  font-size: 0.86rem;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-stat,
+.admin-card {
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 10px 35px rgba(43, 35, 32, 0.04);
+}
+
+.admin-stat {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1.15rem 1.3rem;
+}
+
+.admin-stat span {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+}
+
+.admin-stat strong {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.admin-card {
+  min-width: 0;
+  padding: clamp(1.1rem, 3vw, 1.7rem);
+}
+
+.admin-card h2 {
+  margin: 0;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+}
+
+.admin-card-heading {
+  margin-bottom: 1.2rem;
+}
+
+.admin-card-heading .section-label {
+  margin-bottom: 0.15rem;
+}
+
+.admin-calendar-nav {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.admin-icon-button {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-text);
+}
+
+.admin-icon-button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.admin-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.admin-calendar-weekday {
+  padding-block: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.admin-calendar-day {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 2.35rem;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.8rem;
+}
+
+.admin-calendar-day:hover,
+.admin-calendar-day.is-selected {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.admin-calendar-day.is-today {
+  outline: 1px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.admin-calendar-day.is-selected.is-today {
+  outline-color: var(--color-accent-dark);
+}
+
+.admin-calendar-marker {
+  position: absolute;
+  bottom: 0.25rem;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  background: var(--color-accent-dark);
+}
+
+.admin-calendar-day.is-selected .admin-calendar-marker {
+  background: #fff;
+}
+
+.admin-calendar-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.admin-calendar-legend span {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--color-accent-dark);
+}
+
+.admin-google-link {
+  display: inline-block;
+  margin-top: 1.1rem;
+}
+
+.admin-calendar-hint,
+.admin-config-hint {
+  margin: 1rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.admin-calendar-hint code,
+.admin-config-hint code {
+  overflow-wrap: anywhere;
+}
+
+.admin-appointment-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.admin-appointment {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.9rem;
+  padding: 0.95rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #fffdfc;
+}
+
+.admin-appointment.is-cancelled {
+  opacity: 0.6;
+}
+
+.admin-appointment__time {
+  padding: 0.4rem 0.55rem;
+  border-radius: 8px;
+  background: var(--color-background);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.admin-appointment__details {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+  min-width: 0;
+  font-size: 0.82rem;
+}
+
+.admin-appointment__details strong {
+  font-size: 0.95rem;
+}
+
+.admin-appointment__details > span:not(.admin-status) {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.admin-status {
+  margin-top: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.admin-status--confirmed {
+  background: #e9f4eb;
+  color: #28673a;
+}
+
+.admin-status--pending {
+  background: #fff2dc;
+  color: #805510;
+}
+
+.admin-status--cancelled {
+  background: #f4e9e7;
+  color: #8a514b;
+}
+
+.admin-appointment__actions {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-text-button {
+  padding: 0;
+  color: var(--color-accent-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.admin-text-button--danger {
+  color: #995348;
+}
+
+.admin-empty-state {
+  padding: 2rem 1rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.admin-business-card {
+  margin-top: 1.25rem;
+}
+
+.admin-business-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+  margin: 0;
+}
+
+.admin-business-details dt {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.admin-business-details dd {
+  margin: 0.15rem 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+
+.admin-dialog {
+  width: min(100% - 2rem, 34rem);
+  max-height: min(90vh, 48rem);
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--color-background);
+  color: var(--color-text);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+}
+
+.admin-dialog::backdrop {
+  background: rgba(24, 18, 16, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.admin-dialog form {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 5vw, 2rem);
+}
+
+.admin-dialog label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.admin-dialog input,
+.admin-dialog select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  font: 500 0.9rem var(--font-body);
+}
+
+.admin-dialog-row,
+.admin-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.admin-dialog-row > label {
+  flex: 1 1 0;
+}
+
+.admin-dialog-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.admin-dialog-error,
+.admin-storage-error {
+  color: #995348;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .admin-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-stats {
+    gap: 0.55rem;
+  }
+
+  .admin-stat {
+    padding: 0.8rem;
+  }
+
+  .admin-stat span {
+    font-size: 0.7rem;
+  }
+
+  .admin-stat strong {
+    font-size: 2rem;
+  }
+
+  .admin-appointments-card .admin-card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-dialog-row {
+    flex-direction: column;
+  }
+
+  .admin-business-details {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+}

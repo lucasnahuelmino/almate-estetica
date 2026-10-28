@@ -1,82 +1,22 @@
-/* ==========================================================================
-   ALMA ESTÉTICA & SPA — script.js
-   ETAPA 8: Sistema de configuración
-
-   Qué hace este archivo (8 bloques, cada uno independiente):
-
-     1. SITE_CONFIG: TODOS los datos del negocio, en un solo lugar
-     2. Aplicar SITE_CONFIG: vuelca esos datos en el HTML automáticamente
-     3. WhatsApp: arma los links usando el número de SITE_CONFIG
-     4. Menú mobile: abrir/cerrar el panel de navegación
-     5. Header: le agrega una clase cuando el usuario hace scroll
-     6. Galería: abre/cierra el lightbox al hacer click en una foto
-     7. Scroll reveal: hace aparecer bloques suavemente al hacer scroll
-     8. Reserva de turnos: arma el mensaje de WhatsApp del formulario
-   ========================================================================== */
-
-
-/* ==========================================================================
-   1. SITE_CONFIG
-   ✅ ESTE ES EL ÚNICO LUGAR QUE HAY QUE TOCAR PARA CONVERTIR ESTA
-   PLANTILLA EN LA WEB DE OTRO CLIENTE.
-
-   No hace falta buscar "Alma Estética & Spa" ni el teléfono en ningún
-   otro archivo: cambiá los valores de acá abajo y el sitio entero
-   (textos, links de contacto, redes, colores) se actualiza solo.
-
-   IMPORTANTE: los metadatos para buscadores y redes sociales (el
-   <title>, la meta description, las etiquetas Open Graph y el JSON-LD
-   de la Etapa 6, en el <head> de index.html) NO se actualizan
-   automáticamente desde acá. Eso es intencional: Google y Facebook no
-   siempre ejecutan JavaScript antes de leer esa información, así que
-   esos datos tienen que seguir escritos directamente en el HTML. El
-   README (Etapa 9) explica paso a paso dónde tocar cada cosa.
-   ========================================================================== */
+/* Configuración visible del sitio. Los secretos y cuentas autorizadas viven en el .env del servidor. */
 const SITE_CONFIG = {
-
-  // --- Identidad ---
-  businessName: "Alma Estética & Spa",
-  description: "Tu momento, sin apuro.",
-
-  // --- Contacto ---
-  // "phone" es lo que se VE en pantalla. "phoneHref" es el mismo
-  // número en formato para el atributo href="tel:...": sin espacios,
-  // sin guiones, con el +54 al principio.
+  businessName: "Tu Estética",
+  description: "Un espacio para volver a vos.",
   phone: "+54 11 0000-0000",
   phoneHref: "tel:+541100000000",
-
-  email: "hola@almaestetica.com.ar",
-  emailHref: "mailto:hola@almaestetica.com.ar",
-
-  address: "Av. Cabildo 2340, Buenos Aires",
-  hours: "Mar. a Sáb. de 9:00 a 19:00 hs",
-
-  // --- WhatsApp ---
-  // Solo dígitos, con el código de país, sin "+" ni espacios.
-  whatsapp: "541100000000",
-  whatsappMessage: "Hola! Quiero reservar un turno.",
-
-  // --- Redes sociales (poné la URL completa del perfil) ---
-  instagram: "https://www.instagram.com/almaestetica",
-  facebook: "https://www.facebook.com/almaestetica",
-
-  // --- Textos principales ---
-  // Los títulos y bajadas más importantes del sitio. El resto del
-  // contenido (servicios, testimonios, galería) se edita directamente
-  // en el HTML — ver el README para esa parte.
+  email: "hola@tudominio.com",
+  emailHref: "mailto:hola@tudominio.com",
+  address: "Agregá la dirección del centro",
+  hours: "Editá los días y horarios de atención",
+  whatsapp: "",
+  whatsappMessage: "Hola! Quiero hacer una consulta.",
+  instagram: "",
+  facebook: "",
   mainTexts: {
-    heroTitle: "Tu momento, sin apuro.",
+    heroTitle: "Un espacio para volver a vos.",
     heroSubtitle:
-      "Manicura, depilación, faciales, masajes y maquillaje. Reservá tu " +
-      "turno online en segundos, sin llamadas ni esperas.",
+      "Belleza, cuidado y bienestar en un solo lugar. Descubrí una nueva forma de reservar tu momento.",
   },
-
-  // --- Colores ---
-  // Las mismas variables que existen en :root de style.css. Cambiarlas
-  // acá pisa el valor del CSS al cargar la página, así que rebrandear
-  // el sitio para otro cliente es tocar estos 8 valores y nada más.
-  // Paleta suave: blush + rosa viejo (primera plantilla de fondo claro
-  // del sistema — las otras dos son de fondo oscuro).
   colors: {
     background: "#FAF4F1",
     surface: "#FFFFFF",
@@ -89,372 +29,365 @@ const SITE_CONFIG = {
   },
 };
 
-
-/* ==========================================================================
-   2. APLICAR SITE_CONFIG AL HTML
-   No hay que tocar nada acá abajo para personalizar el sitio — esta
-   parte es "motor", no "datos". Busca en el HTML los elementos
-   marcados con data-config-text / data-config-href y les pone el
-   valor que corresponda de SITE_CONFIG.
-   ========================================================================== */
-
-// Permite usar rutas como "mainTexts.heroTitle" para leer valores anidados
 function getConfigValue(path) {
-  return path
-    .split(".")
-    .reduce((value, key) => (value ? value[key] : undefined), SITE_CONFIG);
-}
-
-// <h1 data-config-text="mainTexts.heroTitle">...</h1> → le pone el texto
-function applyConfigText() {
-  document.querySelectorAll("[data-config-text]").forEach((el) => {
-    const value = getConfigValue(el.getAttribute("data-config-text"));
-    if (value !== undefined) el.textContent = value;
-  });
-}
-
-// <a data-config-href="instagram">...</a> → le pone el href
-function applyConfigHref() {
-  document.querySelectorAll("[data-config-href]").forEach((el) => {
-    const value = getConfigValue(el.getAttribute("data-config-href"));
-    if (value !== undefined) el.setAttribute("href", value);
-  });
-}
-
-// <a aria-label="..." data-config-aria-template="{name} - Inicio">
-// El "{name}" del template se reemplaza por SITE_CONFIG.businessName.
-// Es el mismo mecanismo que data-config-text / data-config-href, pero
-// para aria-label — así funciona igual sin importar el nombre del
-// negocio (antes buscaba el texto literal "Brasa Urbana", que se
-// rompía apenas cambiabas de cliente).
-function applyConfigAriaLabels() {
-  document.querySelectorAll("[data-config-aria-template]").forEach((el) => {
-    const template = el.getAttribute("data-config-aria-template");
-    el.setAttribute("aria-label", template.replace("{name}", SITE_CONFIG.businessName));
-  });
-}
-
-// El copyright del footer arma su propio texto con el año actual, para
-// no tener que acordarse de cambiarlo a mano cada enero.
-function applyCopyright() {
-  const el = document.getElementById("footer-copyright");
-  if (!el) return;
-  const year = new Date().getFullYear();
-  el.textContent = `© ${year} ${SITE_CONFIG.businessName}. Todos los derechos reservados.`;
-}
-
-// "#15181B" → "21, 24, 27" — style.css necesita el fondo también en
-// formato "r, g, b" para poder usarlo dentro de rgba() (header, lightbox).
-function hexToRgbString(hex) {
-  const clean = hex.replace("#", "");
-  const value = parseInt(clean, 16);
-  const r = (value >> 16) & 255;
-  const g = (value >> 8) & 255;
-  const b = value & 255;
-  return `${r}, ${g}, ${b}`;
-}
-
-// Pisa las variables CSS de :root (style.css, Etapa 2) con los colores
-// definidos en SITE_CONFIG.
-function applyBrandColors() {
-  const cssVariableByColorKey = {
-    background: "--color-background",
-    surface: "--color-surface",
-    text: "--color-text",
-    textMuted: "--color-text-muted",
-    accent: "--color-accent",
-    accentDark: "--color-accent-dark",
-    border: "--color-border",
-    onAccent: "--color-on-accent",
-  };
-
-  Object.keys(cssVariableByColorKey).forEach((key) => {
-    const value = SITE_CONFIG.colors[key];
-    if (value) {
-      document.documentElement.style.setProperty(cssVariableByColorKey[key], value);
-    }
-  });
-
-  // El fondo necesita, además, su versión "r, g, b" (ver arriba)
-  if (SITE_CONFIG.colors.background) {
-    document.documentElement.style.setProperty(
-      "--color-background-rgb",
-      hexToRgbString(SITE_CONFIG.colors.background)
-    );
-  }
+  return path.split(".").reduce((value, key) => value?.[key], SITE_CONFIG);
 }
 
 function applySiteConfig() {
-  applyBrandColors();
-  applyConfigText();
-  applyConfigHref();
-  applyConfigAriaLabels();
-  applyCopyright();
-}
+  document.querySelectorAll("[data-config-text]").forEach((element) => {
+    const value = getConfigValue(element.getAttribute("data-config-text"));
+    if (value !== undefined) element.textContent = value;
+  });
 
+  document.querySelectorAll("[data-config-href]").forEach((element) => {
+    const value = getConfigValue(element.getAttribute("data-config-href"));
+    if (value) {
+      element.setAttribute("href", value);
+      element.hidden = false;
+    } else {
+      element.removeAttribute("href");
+      element.hidden = true;
+    }
+  });
 
-/* ==========================================================================
-   3. WHATSAPP
-   Arma el link de WhatsApp una sola vez, a partir del número y el
-   mensaje definidos en SITE_CONFIG, y lo aplica a los 3 botones del
-   sitio (Hero, Ubicación y flotante).
-   ========================================================================== */
-function buildWhatsappLink() {
-  const text = encodeURIComponent(SITE_CONFIG.whatsappMessage);
-  return `https://wa.me/${SITE_CONFIG.whatsapp}?text=${text}`;
+  document.querySelectorAll("[data-config-aria-template]").forEach((element) => {
+    const template = element.getAttribute("data-config-aria-template");
+    element.setAttribute("aria-label", template.replace("{name}", SITE_CONFIG.businessName));
+  });
+
+  Object.entries(SITE_CONFIG.colors).forEach(([key, value]) => {
+    const cssVariable = {
+      background: "--color-background",
+      surface: "--color-surface",
+      text: "--color-text",
+      textMuted: "--color-text-muted",
+      accent: "--color-accent",
+      accentDark: "--color-accent-dark",
+      border: "--color-border",
+      onAccent: "--color-on-accent",
+    }[key];
+    if (cssVariable && value) document.documentElement.style.setProperty(cssVariable, value);
+  });
+
+  const background = SITE_CONFIG.colors.background;
+  if (background) {
+    const value = Number.parseInt(background.slice(1), 16);
+    document.documentElement.style.setProperty(
+      "--color-background-rgb",
+      `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`
+    );
+  }
+
+  const copyright = document.getElementById("footer-copyright");
+  if (copyright) {
+    copyright.textContent = `© ${new Date().getFullYear()} ${SITE_CONFIG.businessName}. Todos los derechos reservados.`;
+  }
 }
 
 function initWhatsappLinks() {
-  const link = buildWhatsappLink();
   const targets = [
     document.getElementById("whatsapp-cta-hero"),
     document.getElementById("whatsapp-cta-location"),
     document.getElementById("whatsapp-float"),
   ];
-
-  targets.forEach((el) => {
-    if (!el) return;
-    el.setAttribute("href", link);
-    el.setAttribute("target", "_blank");
-    el.setAttribute("rel", "noopener noreferrer");
+  const number = SITE_CONFIG.whatsapp.replace(/\D/g, "");
+  targets.forEach((element) => {
+    if (!element) return;
+    if (!number) {
+      element.hidden = true;
+      return;
+    }
+    element.href = `https://wa.me/${number}?text=${encodeURIComponent(SITE_CONFIG.whatsappMessage)}`;
+    element.target = "_blank";
+    element.rel = "noopener noreferrer";
+    element.hidden = false;
   });
 }
 
-
-/* ==========================================================================
-   4. MENÚ MOBILE
-   El CSS de la Etapa 3 ya sabe mostrar/ocultar el panel según la clase
-   `header__nav--open`. Acá solo la agregamos, quitamos, y mantenemos
-   `aria-expanded` sincronizado para lectores de pantalla.
-   ========================================================================== */
 function initMobileMenu() {
   const toggle = document.getElementById("menu-toggle");
   const nav = document.getElementById("header-nav");
   if (!toggle || !nav) return;
 
-  function closeMenu() {
+  const close = () => {
     nav.classList.remove("header__nav--open");
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-label", "Abrir menú de navegación");
-  }
-
-  function openMenu() {
-    nav.classList.add("header__nav--open");
-    toggle.setAttribute("aria-expanded", "true");
-    toggle.setAttribute("aria-label", "Cerrar menú de navegación");
-  }
-
+  };
   toggle.addEventListener("click", () => {
-    const isOpen = nav.classList.contains("header__nav--open");
-    isOpen ? closeMenu() : openMenu();
+    const open = nav.classList.toggle("header__nav--open");
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Cerrar menú de navegación" : "Abrir menú de navegación");
   });
-
-  // Al tocar un link del menú, cerrarlo (si no, tapa el contenido al navegar)
-  nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
-
-  // Cerrar con la tecla Escape
+  nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", close));
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
+    if (event.key === "Escape") close();
   });
-
-  // Cerrar si el usuario toca fuera del menú
   document.addEventListener("click", (event) => {
-    const clickedInsideNav = nav.contains(event.target);
-    const clickedToggle = toggle.contains(event.target);
-    if (!clickedInsideNav && !clickedToggle) closeMenu();
+    if (!nav.contains(event.target) && !toggle.contains(event.target)) close();
   });
 }
 
-
-/* ==========================================================================
-   5. HEADER AL HACER SCROLL
-   Agrega la clase `is-scrolled` al header apenas el usuario baja un
-   poco la página. El aspecto visual de esa clase está definido en
-   style.css (Etapa 3); acá solo decidimos cuándo se activa.
-   ========================================================================== */
 function initHeaderScroll() {
   const header = document.getElementById("site-header");
   if (!header) return;
-
-  function updateHeaderState() {
-    const shouldBeScrolled = window.scrollY > 40;
-    header.classList.toggle("is-scrolled", shouldBeScrolled);
-  }
-
-  updateHeaderState();
-  window.addEventListener("scroll", updateHeaderState, { passive: true });
+  const update = () => header.classList.toggle("is-scrolled", window.scrollY > 40);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
 }
 
-
-/* ==========================================================================
-   6. GALERÍA / LIGHTBOX
-   Al tocar una foto de la galería, se abre en grande sobre el resto de
-   la página. Se puede cerrar con el botón, con Escape, o tocando fuera
-   de la imagen.
-   ========================================================================== */
 function initGalleryLightbox() {
   const grid = document.getElementById("gallery-grid");
   const lightbox = document.getElementById("lightbox");
-  const lightboxImage = document.getElementById("lightbox-image");
+  const image = document.getElementById("lightbox-image");
   const closeButton = document.getElementById("lightbox-close");
-  if (!grid || !lightbox || !lightboxImage || !closeButton) return;
+  if (!grid || !lightbox || !image || !closeButton) return;
+  let lastFocusedElement;
 
-  let lastFocusedElement = null;
-
-  function openLightbox(sourceImg) {
-    lightboxImage.src = sourceImg.getAttribute("src");
-    lightboxImage.alt = sourceImg.getAttribute("alt") || "";
-    lightbox.classList.add("lightbox--open");
-    lightbox.setAttribute("aria-hidden", "false");
-    lastFocusedElement = document.activeElement;
-    closeButton.focus();
-    document.body.style.overflow = "hidden"; // evita el scroll de fondo
-  }
-
-  function closeLightbox() {
+  const close = () => {
     lightbox.classList.remove("lightbox--open");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    if (lastFocusedElement) lastFocusedElement.focus();
-  }
-
+    lastFocusedElement?.focus();
+  };
   grid.querySelectorAll(".gallery__item").forEach((item) => {
     item.addEventListener("click", () => {
-      const img = item.querySelector("img");
-      if (img) openLightbox(img);
+      const source = item.querySelector("img");
+      if (!source) return;
+      image.src = source.src;
+      image.alt = source.alt;
+      lastFocusedElement = document.activeElement;
+      lightbox.classList.add("lightbox--open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeButton.focus();
     });
   });
-
-  closeButton.addEventListener("click", closeLightbox);
-
-  // Tocar el fondo oscuro (fuera de la imagen) también cierra
+  closeButton.addEventListener("click", close);
   lightbox.addEventListener("click", (event) => {
-    if (event.target === lightbox) closeLightbox();
+    if (event.target === lightbox) close();
   });
-
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && lightbox.classList.contains("lightbox--open")) {
-      closeLightbox();
-    }
+    if (event.key === "Escape" && lightbox.classList.contains("lightbox--open")) close();
   });
 }
 
-
-/* ==========================================================================
-   7. APARICIÓN DE ELEMENTOS AL HACER SCROLL
-   Observa todos los elementos con clase `.reveal` (tarjetas de menú,
-   fotos de la galería, testimonios, bloques de "Nosotros" y
-   "Ubicación") y les agrega `.is-visible` la primera vez que entran en
-   pantalla. El aspecto de ambos estados está definido en style.css.
-   ========================================================================== */
 function initScrollReveal() {
   const items = document.querySelectorAll(".reveal");
   if (!items.length) return;
-
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  // Si el navegador no soporta IntersectionObserver, o el usuario pidió
-  // menos movimiento, mostramos todo directamente sin animar.
-  if (!("IntersectionObserver" in window) || prefersReducedMotion) {
-    items.forEach((el) => el.classList.add("is-visible"));
+  if (
+    !("IntersectionObserver" in window) ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    items.forEach((item) => item.classList.add("is-visible"));
     return;
   }
-
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target); // aparece una sola vez
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
       });
     },
     { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
   );
-
-  items.forEach((el) => observer.observe(el));
+  items.forEach((item) => observer.observe(item));
 }
 
+function initHeroCarousel() {
+  const carousel = document.getElementById("hero-carousel");
+  if (!carousel) return;
+  const slides = [...carousel.querySelectorAll(".hero-carousel__slide")];
+  const dots = carousel.querySelector(".hero-carousel__dots");
+  const previous = carousel.querySelector("[data-carousel-prev]");
+  const next = carousel.querySelector("[data-carousel-next]");
+  if (slides.length < 2 || !dots || !previous || !next) return;
 
-/* ==========================================================================
-   8. RESERVA DE TURNOS
-   ⚠️ IMPORTANTE — leer antes de prometerle esto a un cliente:
-   Este formulario NO es un calendario en tiempo real. No bloquea
-   horarios, no sabe qué turnos ya están ocupados y no guarda nada en
-   ningún lado — es un sitio estático, sin backend. Lo que hace es
-   juntar los datos que la persona cargó y armar un link de WhatsApp
-   con todo ya escrito, para que el negocio lo reciba y confirme el
-   turno a mano (o lo rechace, si ese horario ya está ocupado).
-
-   Si en algún momento hace falta un calendario real con disponibilidad
-   en vivo, hay que sumar algún servicio externo (Google Calendar,
-   Calendly, etc.) o un backend propio — queda fuera del alcance de
-   esta plantilla HTML/CSS/JS sin servidor.
-   ========================================================================== */
-function initBookingForm() {
-  const form = document.getElementById("booking-form");
-  const dateInput = document.getElementById("booking-date");
-  const serviceSelect = document.getElementById("booking-service");
-  if (!form || !dateInput || !serviceSelect) return;
-
-  // No dejar elegir una fecha anterior a hoy
-  const today = new Date().toISOString().split("T")[0];
-  dateInput.setAttribute("min", today);
-
-  // Los links "Reservar este servicio →" de cada tarjeta precargan el
-  // select del formulario con ese servicio y llevan el scroll hasta ahí.
-  document.querySelectorAll(".menu-card__book").forEach((link) => {
-    link.addEventListener("click", () => {
-      const service = link.getAttribute("data-service");
-      if (service) serviceSelect.value = service;
+  let activeIndex = 0;
+  let timer;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const indicators = slides.map((_, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "hero-carousel__dot";
+    button.setAttribute("aria-label", `Mostrar foto ${index + 1} de ${slides.length}`);
+    button.addEventListener("click", () => {
+      showSlide(index);
+      start();
     });
+    dots.append(button);
+    return button;
   });
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+  function showSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === activeIndex;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+      indicators[slideIndex].classList.toggle("is-active", active);
+      indicators[slideIndex].setAttribute("aria-current", String(active));
+    });
+  }
 
-    const data = new FormData(form);
-    const name = (data.get("name") || "").toString().trim();
-    const service = (data.get("service") || "").toString();
-    const date = (data.get("date") || "").toString();
-    const time = (data.get("time") || "").toString();
-    const notes = (data.get("notes") || "").toString().trim();
+  function stop() {
+    window.clearInterval(timer);
+  }
 
-    if (!name || !service || !date || !time) {
-      form.reportValidity();
+  function start() {
+    stop();
+    if (!reducedMotion.matches && !document.hidden) {
+      timer = window.setInterval(() => showSlide(activeIndex + 1), 5000);
+    }
+  }
+
+  previous.addEventListener("click", () => {
+    showSlide(activeIndex - 1);
+    start();
+  });
+  next.addEventListener("click", () => {
+    showSlide(activeIndex + 1);
+    start();
+  });
+  carousel.addEventListener("mouseenter", stop);
+  carousel.addEventListener("mouseleave", start);
+  carousel.addEventListener("focusin", stop);
+  carousel.addEventListener("focusout", start);
+  document.addEventListener("visibilitychange", start);
+  reducedMotion.addEventListener("change", start);
+  showSlide(0);
+  start();
+}
+
+async function requestJson(url, options) {
+  const response = await fetch(url, { credentials: "same-origin", ...options });
+  if (response.status === 204) return null;
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || "No se pudo completar la solicitud.");
+  return body;
+}
+
+function localDateKey(timeZone, date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function initPublicBooking() {
+  const form = document.getElementById("booking-form");
+  if (!form) return;
+  const serviceSelect = document.getElementById("booking-service");
+  const dateInput = document.getElementById("booking-date");
+  const timeSelect = document.getElementById("booking-time");
+  const submitButton = document.getElementById("booking-submit");
+  const feedback = document.getElementById("booking-feedback");
+  let timeZone = "America/Argentina/Buenos_Aires";
+  let requestId = 0;
+
+  function setFeedback(message, isError = false) {
+    feedback.textContent = message;
+    feedback.classList.toggle("is-error", isError);
+  }
+
+  function syncSubmitState() {
+    submitButton.disabled =
+      !serviceSelect.value || !dateInput.value || !timeSelect.value || timeSelect.disabled;
+  }
+
+  async function loadSlots() {
+    const service = serviceSelect.value;
+    const date = dateInput.value;
+    const thisRequest = ++requestId;
+    timeSelect.replaceChildren(new Option("Consultando disponibilidad…", ""));
+    timeSelect.disabled = true;
+    submitButton.disabled = true;
+    if (!service || !date) {
+      timeSelect.replaceChildren(new Option("Primero elegí servicio y día", ""));
+      setFeedback("");
+      syncSubmitState();
       return;
     }
 
-    // Convierte "2026-11-03" a "03/11/2026", más legible en el mensaje
-    const [year, month, day] = date.split("-");
-    const dateFormatted = `${day}/${month}/${year}`;
-
-    let message =
-      `Hola! Quiero reservar un turno.\n` +
-      `Nombre: ${name}\n` +
-      `Servicio: ${service}\n` +
-      `Fecha preferida: ${dateFormatted}\n` +
-      `Horario preferido: ${time}`;
-
-    if (notes) {
-      message += `\nComentario: ${notes}`;
+    try {
+      const query = new URLSearchParams({ date, service });
+      const { slots } = await requestJson(`/api/public/availability?${query}`);
+      if (thisRequest !== requestId) return;
+      timeSelect.replaceChildren(
+        new Option(slots.length ? "Elegí un horario" : "No hay horarios disponibles", "")
+      );
+      slots.forEach((slot) => timeSelect.add(new Option(slot, slot)));
+      timeSelect.disabled = slots.length === 0;
+      syncSubmitState();
+      setFeedback(slots.length ? "Estos horarios se consultan en tiempo real." : "Probá otro día o servicio.");
+    } catch (error) {
+      if (thisRequest !== requestId) return;
+      timeSelect.replaceChildren(new Option("Disponibilidad no disponible", ""));
+      setFeedback(error.message, true);
+      syncSubmitState();
     }
+  }
 
-    const link = `https://wa.me/${SITE_CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(link, "_blank", "noopener,noreferrer");
+  requestJson("/api/public/config")
+    .then(({ services, timeZone: configuredTimeZone }) => {
+      timeZone = configuredTimeZone;
+      const currentSelection = serviceSelect.value;
+      serviceSelect.replaceChildren(new Option("Elegí un servicio", ""));
+      services.forEach(({ name }) => serviceSelect.add(new Option(name, name)));
+      serviceSelect.value = currentSelection;
+      dateInput.min = localDateKey(timeZone);
+      dateInput.value = dateInput.min;
+      loadSlots();
+    })
+    .catch((error) => {
+      serviceSelect.disabled = true;
+      dateInput.disabled = true;
+      setFeedback(error.message, true);
+    });
+
+  serviceSelect.addEventListener("change", loadSlots);
+  dateInput.addEventListener("change", loadSlots);
+  timeSelect.addEventListener("change", syncSubmitState);
+  document.querySelectorAll(".menu-card__book").forEach((link) => {
+    link.addEventListener("click", () => {
+      const service = link.getAttribute("data-service");
+      if (service) {
+        serviceSelect.value = service;
+        loadSlots();
+      }
+    });
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    submitButton.disabled = true;
+    setFeedback("Confirmando el turno…");
+    try {
+      await requestJson("/api/public/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      form.reset();
+      dateInput.min = localDateKey(timeZone);
+      dateInput.value = dateInput.min;
+      await loadSlots();
+      setFeedback("¡Turno reservado! Recibimos tu solicitud de forma segura.");
+    } catch (error) {
+      await loadSlots();
+      setFeedback(error.message, true);
+    } finally {
+      syncSubmitState();
+    }
   });
 }
 
-
-/* ==========================================================================
-   INICIALIZACIÓN
-   applySiteConfig() va primero: así el resto del sitio (WhatsApp
-   incluido) ya encuentra los datos actualizados cuando arranca.
-   ========================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   applySiteConfig();
   initWhatsappLinks();
@@ -462,5 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeaderScroll();
   initGalleryLightbox();
   initScrollReveal();
-  initBookingForm();
+  initHeroCarousel();
+  initPublicBooking();
 });

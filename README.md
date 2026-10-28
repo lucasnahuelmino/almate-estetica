@@ -1,10 +1,8 @@
-# Alma Estética & Spa — sitio construido con ALMATE
+# Demo de sitio para estética — ALMATE
 
-Este sitio es una copia de la plantilla base de restaurantes (Brasa
-Urbana), adaptada por completo al rubro estética y belleza — incluye
-una sección nueva que no existía en la plantilla original: un
-formulario de reserva de turnos (ver sección 4 más abajo, es
-importante leerla antes de prometerle esto a un cliente real).
+Este es un sitio de muestra para adaptar y ofrecer a centros de
+estética. No representa a un negocio real: reemplazá los datos y textos
+de ejemplo antes de publicarlo para un cliente.
 
 La plantilla nació como el primer producto del sistema **ALMATE**: una
 base reutilizable que después se va a poder convertir en ALMATE
@@ -21,12 +19,17 @@ problema del README, no tuyo.
 ## 1. Qué contiene el proyecto
 
 ```
-plantilla-restaurante/
-  index.html    → todo el contenido y la estructura de la página
-  style.css     → todo el diseño visual (colores, tipografía, layout)
-  script.js     → toda la interactividad (menú, WhatsApp, animaciones)
+Estetica/
+  index.html    → página pública, servicios y reserva online
+  admin.html    → panel administrativo protegido por Google OAuth
+  script.js     → configuración pública, carrusel y reserva del cliente
+  admin.js      → panel conectado al backend autenticado
+  server/       → API, sesiones seguras, PostgreSQL y Google Calendar
+  .env.example  → ejemplo de configuración privada del servidor
+  compose.yaml  → PostgreSQL local para desarrollo
+  package.json  → dependencias y comandos Node
+  style.css     → diseño responsive
   img/          → las fotos del sitio
-  assets/       → para íconos u otros archivos que no sean fotos
   README.md     → este archivo
 ```
 
@@ -35,21 +38,18 @@ Los tres archivos principales están divididos así a propósito:
 **comportamiento** (JS). Si querés cambiar un color, no vas a tocar el
 HTML. Si querés cambiar un texto, no vas a tocar el CSS.
 
-No hay ningún framework, ni proceso de instalación, ni build. Es HTML,
-CSS y JavaScript "puro" — funciona igual hoy que dentro de cinco años,
-sin depender de que una librería externa siga actualizada.
+La web pública está hecha con HTML, CSS y JavaScript. Para reservas y
+el panel privado requiere Node.js 22 o superior, PostgreSQL y
+credenciales OAuth de Google configuradas en el servidor.
 
 ---
 
 ## 2. Cómo abrirlo
 
-La forma más simple: hacer doble click en `index.html`. Se abre en tu
-navegador y funciona completo — menú, WhatsApp, galería, animaciones.
-
-Si vas a estar editando seguido, es más cómodo usar la extensión **Live
-Server** de VS Code (click derecho sobre `index.html` → "Open with Live
-Server"): cada vez que guardás un cambio, la página se refresca sola.
-No es obligatorio, es solo más cómodo.
+Para probar el flujo completo, no abras los HTML con doble click ni
+Live Server: el inicio de sesión y las reservas necesitan el servidor.
+Seguí los pasos de "Arranque local y Google OAuth" más abajo y abrí
+`http://localhost:3000`.
 
 ---
 
@@ -64,8 +64,8 @@ al principio de `script.js`.
 Abrí `script.js` y editá el objeto `SITE_CONFIG` (está en las primeras
 líneas del archivo, bien marcado). Cambiás el valor ahí, y se actualiza
 solo en TODOS los lugares del sitio donde aparece ese dato — el header,
-el footer, la sección de Ubicación, los botones de WhatsApp. No hace
-falta buscar "Alma Estética & Spa" a mano en ningún otro archivo.
+el footer, la sección de Ubicación y el panel privado. No hace falta buscar
+el nombre del negocio a mano en otros archivos.
 
 ```js
 const SITE_CONFIG = {
@@ -76,13 +76,17 @@ const SITE_CONFIG = {
   emailHref: "mailto:contacto@negocio.com",
   address: "Calle Falsa 123, Ciudad",
   hours: "Lun. a Sáb. de 10:00 a 20:00 hs",
-  whatsapp: "541112345678",           // solo números, con código de país
+  whatsapp: "",                       // dígitos con código de país, sin +
   whatsappMessage: "Hola! Quiero...",
   instagram: "https://instagram.com/...",
   facebook: "https://facebook.com/...",
   // ...
 };
 ```
+
+Esta configuración pública no contiene contraseñas ni tokens. Las
+cuentas que pueden iniciar sesión se configuran aparte en el `.env`
+privado del servidor.
 
 ### Colores
 
@@ -161,39 +165,89 @@ En la sección Ubicación de `index.html`, buscá el `<iframe>` y
 reemplazá su `src` por el link "insertar mapa" de Google Maps para la
 dirección real del negocio.
 
-### Cómo funciona la reserva de turnos (sección `#turnos`)
+### Arranque local y Google OAuth
 
-⚠️ **Leer esto antes de ofrecerle el sitio a un cliente real** — es la
-diferencia entre una promesa que el sitio cumple y una que no.
+**Requisitos:** Node.js 22+, Docker Desktop (para PostgreSQL local) y
+una cuenta de Google con acceso a Google Cloud Console.
 
-Este sitio es HTML/CSS/JS sin servidor — no hay ninguna base de datos
-ni backend. Por eso "reserva de turno online" acá significa esto,
-concretamente:
+1. Copiá `.env.example` como `.env`. Ese archivo está ignorado por Git;
+   no lo publiques ni lo envíes por chat.
+2. Generá dos secretos distintos desde PowerShell:
 
-1. La persona completa el formulario (nombre, servicio, fecha, horario
-   preferido, comentario opcional).
-2. Al enviarlo, el JavaScript arma un mensaje de WhatsApp con todos
-   esos datos ya escritos y abre una conversación nueva con el número
-   de `SITE_CONFIG.whatsapp`.
-3. El negocio **confirma el turno a mano**, como si el cliente les
-   hubiera escrito directo. El sitio no sabe qué horarios ya están
-   ocupados — no bloquea turnos duplicados, no valida disponibilidad
-   real, no envía recordatorios.
+   ```powershell
+   node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+   ```
 
-Es, en la práctica, un formulario que reemplaza escribir el mensaje de
-WhatsApp a mano — no un calendario con disponibilidad en vivo (tipo
-Calendly o un sistema de turnero real). Para la mayoría de los
-salones chicos esto es más que suficiente y evita pagar un servicio
-de terceros, pero si el cliente necesita bloqueo de horarios en
-tiempo real, eso requiere sumar un servicio externo (Google Calendar,
-Calendly, etc.) o un backend propio — queda fuera del alcance de esta
-plantilla.
+   Pegá el primero en `SESSION_SECRET`, el segundo en
+   `TOKEN_ENCRYPTION_KEY`. No reutilices ni compartas esos valores.
+3. En Google Cloud Console, creá un proyecto y habilitá **Google
+   Calendar API**. Configurá la pantalla de consentimiento OAuth como
+   externa y, mientras esté en prueba, agregá las cuentas autorizadas
+   como usuarios de prueba.
+4. Creá un ID de cliente OAuth de tipo **Aplicación web**. Agregá estos
+   URI de redirección autorizados para desarrollo:
 
-Las 6 tarjetas de servicios tienen un link "Reservar este servicio →"
-que lleva directo al formulario con ese servicio ya preseleccionado —
-si agregás o quitás servicios (ver sección de arriba), acordate de
-agregar también la opción correspondiente en el `<select>` del
-formulario (`id="booking-service"`), si no el texto no va a coincidir.
+   ```text
+   http://localhost:3000/auth/google/callback
+   http://localhost:3000/auth/calendar/callback
+   ```
+
+   Copiá el ID y el secreto OAuth en `GOOGLE_CLIENT_ID` y
+   `GOOGLE_CLIENT_SECRET` del `.env`. Nunca los pongas en el frontend.
+5. En `ADMIN_EMAILS`, configurá el email o emails autorizados, separados
+   por comas. Poné la cuenta propietaria de la agenda también en
+   `GOOGLE_CALENDAR_OWNER_EMAIL`; inicialmente debe estar autorizada
+   como administrador. No se usa ni se guarda la contraseña de Google.
+6. Iniciá la base y el servidor:
+
+   ```powershell
+   docker compose up -d database
+   npm install
+   npm start
+   ```
+
+   Abrí `http://localhost:3000/admin.html`, iniciá sesión con una cuenta
+   autorizada y elegí **Conectar Google Calendar**. En ese segundo paso,
+   Google solicita permiso para leer y gestionar eventos del calendario.
+7. Probá una reserva desde `http://localhost:3000`. La disponibilidad se
+   calcula usando los horarios de atención, la duración de cada
+   servicio, turnos del sistema y eventos ya existentes en Google
+   Calendar. Las nuevas reservas se escriben en PostgreSQL y en Google
+   Calendar; también se pueden agregar, cancelar o reprogramar desde el
+   panel autenticado.
+
+Los días y duración de servicios se pueden adaptar en
+`BUSINESS_HOURS_JSON` y `SERVICE_DURATIONS_JSON` del `.env`. En el
+horario semanal, 0 es domingo y 6 sábado. La anticipación mínima y el
+intervalo de turnos se configuran en `MINIMUM_BOOKING_NOTICE_MINUTES` y
+`BOOKING_SLOT_INTERVAL_MINUTES`.
+
+### Seguridad y cambio de cuenta
+
+- La sesión usa cookies `HttpOnly`, `SameSite=Lax`, expiración y
+  almacenamiento en PostgreSQL; las acciones administrativas validan
+  cuenta autorizada, origen y token CSRF.
+- Las credenciales de OAuth quedan en el servidor. El token de
+  renovación de Calendar se cifra en PostgreSQL con
+  `TOKEN_ENCRYPTION_KEY`; guardá una copia segura de esa clave. Si se
+  pierde, eliminá la conexión anterior y autorizá Calendar de nuevo.
+- Para cambiar la cuenta del negocio, desconectá el Calendar desde el
+  panel, actualizá `ADMIN_EMAILS` y `GOOGLE_CALENDAR_OWNER_EMAIL`,
+  agregá la cuenta nueva como usuario de prueba en Google Cloud y
+  reiniciá el servidor. Luego iniciá sesión y volvé a conectar Calendar.
+- Las cuentas listadas en `ADMIN_EMAILS` administran el mismo negocio y
+  calendario configurado en `GOOGLE_CALENDAR_OWNER_EMAIL`. Esta demo es
+  de una instalación por negocio; para venderla a varios clientes,
+  desplegá una instancia/base aislada por cliente o implementá
+  aislamiento multi-tenant antes de compartir una base.
+- No alojes datos de clientas reales hasta definir privacidad, avisos,
+  retención y copias de seguridad de PostgreSQL. En producción, usá
+  HTTPS, una base administrada con TLS, secretos del proveedor (no un
+  archivo `.env`) y actualizá los URI OAuth al dominio publicado.
+- Si la pantalla OAuth permanece en modo de prueba, Google puede
+  limitar los usuarios o la duración de los tokens. Para operar con
+  clientes reales, revisá el proceso de publicación/verificación OAuth
+  de Google para los permisos de Calendar.
 
 ---
 
@@ -206,12 +260,7 @@ así que necesitan estar escritos directamente en el HTML. Hay que
 actualizar a mano:
 
 - `<title>` y `<meta name="description">`
-- `<link rel="canonical">` (el dominio real del sitio, una vez publicado)
 - Las etiquetas `og:*` y `twitter:*` (título, descripción, imagen, URL)
-- El bloque `<script type="application/ld+json">` al final del
-  `<head>` (nombre, teléfono, dirección y horario del negocio — esto es
-  lo que le permite a Google mostrar el negocio con mapa y horarios en
-  los resultados de búsqueda)
 
 ---
 
@@ -219,21 +268,20 @@ actualizar a mano:
 
 Checklist, en orden:
 
-1. **Duplicar la carpeta**: copiá `plantilla-restaurante/` completa y
-   renombrala con el nombre del cliente (por ejemplo `bella-barberia/`).
+1. **Duplicar la carpeta**: copiá la carpeta completa y renombrala con
+   el nombre del cliente.
 2. **Completar `SITE_CONFIG`** en `script.js` con los datos reales del
    negocio (nombre, teléfono, WhatsApp, redes, dirección, horarios,
    colores).
 3. **Reemplazar todas las fotos** de `img/` por fotos reales del
    negocio (ver los tamaños recomendados más arriba).
 4. **Reescribir los textos**: la bajada del Hero, la sección
-   "Nosotros", los 6 servicios/platos y los 3 testimonios — con
-   contenido real del cliente, no el de este salón de ejemplo.
+   "Nosotros", servicios y testimonios — con contenido real del cliente.
 5. **Actualizar el mapa** con la dirección real.
 6. **Actualizar los metadatos del `<head>`** (sección 4 de arriba) con
    el dominio real donde va a vivir el sitio.
 7. **Probar en un celular real** (no solo en la computadora): menú,
-   WhatsApp, galería, formularios de contacto si los hay.
+   carrusel, galería, agenda y enlaces de contacto.
 8. **Revisar todos los links**: WhatsApp, teléfono, email, redes
    sociales, mapa — que abran lo que corresponde.
 9. **Definir la firma "Built with ALMATE"** del footer según el acuerdo
@@ -246,7 +294,7 @@ Checklist, en orden:
 
 Esta carpeta es la base. Lo que la hace reutilizable para otros
 negocios (barberías, inmobiliarias, talleres, profesionales) es que
-casi todo lo específico de "restaurante" vive en el contenido (HTML) y
+casi todo lo específico del negocio vive en el contenido (HTML) y
 los datos (`SITE_CONFIG`), no en el motor:
 
 - La estructura de carpetas, el sistema de configuración, las
@@ -272,11 +320,14 @@ los nombres de sección según corresponda.
 - [x] Etapa 7 — Optimización de velocidad
 - [x] Etapa 8 — Sistema de configuración (`SITE_CONFIG`)
 - [x] Etapa 9 — Documentación y preparación para vender a clientes
-- [x] Adaptación al rubro estética y belleza, con sección nueva de
-      reserva de turnos (ver sección 3 arriba, "Cómo funciona la
-      reserva de turnos" — importante entender los límites antes de
-      vender esto como "turnero online")
+- [x] Demo adaptable al rubro estética y belleza
+- [x] Carrusel automático con controles y respeto por movimiento reducido
+- [x] Reserva de turnos con disponibilidad compartida entre PostgreSQL y Google Calendar
+- [x] Panel privado para consultar, agregar, cancelar y reprogramar turnos
+- [x] Inicio de sesión Google con cuentas administradoras configurables
+- [x] Tokens de Calendar cifrados y sesiones administrativas almacenadas en PostgreSQL
+- [ ] Configuración de PostgreSQL, OAuth y despliegue: completar para cada instalación
 
-Pendiente, y depende de cada cliente puntual, no de la plantilla en sí:
-fotos reales (`img/` está con nombres de archivo de ejemplo) y el
-contenido definitivo de cada sección.
+Antes de usarlo con un cliente, configurá PostgreSQL y Google OAuth,
+desplegá el servidor con HTTPS y reemplazá los textos, fotos y datos de
+ejemplo. No uses testimonios de muestra como opiniones reales.

@@ -11,3 +11,10 @@ Desktop.ini
 # Archivos temporales
 *.tmp
 *.log
+
+# Configuración privada y dependencias
+.env
+.env.*
+!.env.example
+node_modules/
+npm-debug.log*

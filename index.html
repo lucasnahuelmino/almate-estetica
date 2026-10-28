@@ -5,31 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
 
-  <!-- ⚠️ SITE_CONFIG (Etapa 8): cuando esta plantilla se convierta en la
-       web de un cliente real, estos valores (title, description, OG,
-       canonical, JSON-LD) son EXACTAMENTE los mismos datos que van a
-       vivir en SITE_CONFIG. Por ahora están escritos a mano acá. -->
-
-  <title>Alma Estética & Spa | Belleza y bienestar en Buenos Aires</title>
-  <meta name="description" content="Alma Estética & Spa: manicura, depilación, faciales, masajes y maquillaje. Reservá tu turno online en segundos.">
-
-  <!-- Reemplazar por el dominio real una vez que el sitio esté publicado -->
-  <link rel="canonical" href="https://www.almaestetica.com.ar/">
+  <title>Demo de sitio para estética | ALMATE</title>
+  <meta name="description" content="Demo personalizable para centros de estética: servicios, galería de fotos y reservas con agenda online.">
 
   <!-- Open Graph: cómo se ve el sitio cuando lo comparten en redes -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Alma Estética & Spa">
-  <meta property="og:title" content="Alma Estética & Spa | Belleza y bienestar en Buenos Aires">
-  <meta property="og:description" content="Manicura, depilación, faciales, masajes y maquillaje. Reservá tu turno en segundos.">
-  <meta property="og:image" content="https://www.almaestetica.com.ar/img/hero-estetica.jpg">
-  <meta property="og:url" content="https://www.almaestetica.com.ar/">
+  <meta property="og:site_name" content="Demo de sitio para estética">
+  <meta property="og:title" content="Demo de sitio para estética | ALMATE">
+  <meta property="og:description" content="Una presencia digital adaptable para centros de estética, con agenda online y galería.">
+  <meta property="og:image" content="img/hero-estetica.jpg">
   <meta property="og:locale" content="es_AR">
 
   <!-- Twitter/X usa estas si no encuentra las de Open Graph -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Alma Estética & Spa | Belleza y bienestar en Buenos Aires">
-  <meta name="twitter:description" content="Manicura, depilación, faciales, masajes y maquillaje.">
-  <meta name="twitter:image" content="https://www.almaestetica.com.ar/img/hero-estetica.jpg">
+  <meta name="twitter:title" content="Demo de sitio para estética | ALMATE">
+  <meta name="twitter:description" content="Una presencia digital adaptable para centros de estética, con agenda online y galería.">
+  <meta name="twitter:image" content="img/hero-estetica.jpg">
 
   <!-- Tipografías: Cormorant Garamond (títulos, elegante/delicada) + Manrope (cuerpo). Se cargan solo los pesos que usamos. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,38 +37,6 @@
        también acá. -->
   <link rel="preload" as="image" href="img/hero-estetica.jpg" fetchpriority="high">
 
-  <!-- Datos estructurados (JSON-LD): así Google entiende que esto es un
-       restaurante real, con dirección, teléfono y horarios — es lo que
-       habilita que aparezca con estrellas, mapa y horario en los
-       resultados de búsqueda ("SEO local"). Los valores de acá deben
-       coincidir con los de la sección de Ubicación más abajo. -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BeautySalon",
-    "name": "Alma Estética & Spa",
-    "image": "https://www.almaestetica.com.ar/img/hero-estetica.jpg",
-    "url": "https://www.almaestetica.com.ar/",
-    "telephone": "+54-11-0000-0000",
-    "priceRange": "$$",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Av. Cabildo 2340",
-      "addressLocality": "Buenos Aires",
-      "addressCountry": "AR"
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "opens": "09:00",
-      "closes": "19:00"
-    },
-    "sameAs": [
-      "https://www.instagram.com/almaestetica",
-      "https://www.facebook.com/almaestetica"
-    ]
-  }
-  </script>
 </head>
 <body>
 
@@ -86,8 +45,8 @@
        ====================================== -->
   <header class="site-header" id="site-header">
     <div class="header__inner">
-      <a href="#inicio" class="header__logo" aria-label="Alma Estética & Spa - Inicio" data-config-text="businessName" data-config-aria-template="{name} - Inicio">
-        Alma Estética & Spa
+      <a href="#inicio" class="header__logo" aria-label="Tu Estética - Inicio" data-config-text="businessName" data-config-aria-template="{name} - Inicio">
+        Tu Estética
       </a>
 
       <nav class="header__nav" id="header-nav" aria-label="Navegación principal">
@@ -124,11 +83,11 @@
          ====================================== -->
     <section class="hero" id="inicio">
       <div class="hero__content">
-        <p class="hero__eyebrow">Estética & spa</p>
-        <h1 class="hero__title" data-config-text="mainTexts.heroTitle">Tu momento, sin apuro.</h1>
+        <p class="hero__eyebrow"><span class="demo-badge">SITIO DEMO · PERSONALIZABLE</span></p>
+        <h1 class="hero__title" data-config-text="mainTexts.heroTitle">Un espacio para volver a vos.</h1>
         <p class="hero__subtitle" data-config-text="mainTexts.heroSubtitle">
-          Manicura, depilación, faciales, masajes y maquillaje. Reservá tu
-          turno online en segundos, sin llamadas ni esperas.
+          Belleza, cuidado y bienestar en un solo lugar. Descubrí una nueva
+          forma de reservar tu momento.
         </p>
         <div class="hero__actions">
           <a href="#turnos" class="btn btn--primary">Reservar turno</a>
@@ -136,15 +95,22 @@
         </div>
       </div>
 
-      <div class="hero__media">
-        <img
-          src="img/hero-estetica.jpg"
-          alt="Sala de tratamientos de Alma Estética & Spa"
-          loading="eager"
-          fetchpriority="high"
-          width="880"
-          height="1100"
-        >
+      <div class="hero__media hero-carousel" id="hero-carousel" role="region" aria-roledescription="carrusel" aria-label="Fotos del espacio">
+        <div class="hero-carousel__slides" aria-live="off">
+          <img class="hero-carousel__slide is-active" src="img/hero-estetica.jpg" alt="Sala de tratamientos de spa" loading="eager" fetchpriority="high" width="880" height="1100">
+          <img class="hero-carousel__slide" src="img/galeria-01.jpg" alt="Recepción luminosa de un centro de estética" loading="lazy" decoding="async" width="600" height="600">
+          <img class="hero-carousel__slide" src="img/galeria-02.jpg" alt="Espacio de manicura" loading="lazy" decoding="async" width="600" height="600">
+          <img class="hero-carousel__slide" src="img/galeria-03.jpg" alt="Sala de tratamientos faciales" loading="lazy" decoding="async" width="600" height="600">
+          <img class="hero-carousel__slide" src="img/galeria-06.jpg" alt="Peinado realizado en salón" loading="lazy" decoding="async" width="600" height="600">
+        </div>
+        <div class="hero-carousel__caption">
+          <span>Tu próximo momento empieza acá</span>
+          <div class="hero-carousel__controls">
+            <button type="button" class="hero-carousel__arrow" data-carousel-prev aria-label="Foto anterior">&larr;</button>
+            <div class="hero-carousel__dots" aria-label="Elegir foto"></div>
+            <button type="button" class="hero-carousel__arrow" data-carousel-next aria-label="Foto siguiente">&rarr;</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -155,7 +121,7 @@
       <div class="about__media reveal">
         <img
           src="img/about-salon.jpg"
-          alt="Especialista de Alma Estética & Spa realizando un tratamiento facial"
+        alt="Especialista realizando un tratamiento facial"
           loading="lazy"
           decoding="async"
           width="700"
@@ -167,7 +133,7 @@
         <p class="section-label">Quiénes somos</p>
         <h2>Un espacio pensado para vos.</h2>
         <p>
-          Alma Estética & Spa nació para que cuidarte no sea una carrera contra
+          <span data-config-text="businessName">Tu Estética</span> nació para que cuidarte no sea una carrera contra
           el reloj: ambiente tranquilo, productos de calidad y profesionales
           que se toman el tiempo de escuchar qué necesitás.
         </p>
@@ -187,7 +153,7 @@
       <div class="menu__grid">
 
         <article class="menu-card reveal">
-          <img src="img/servicio-manicura.jpg" alt="Manicura siendo realizada en Alma Estética" loading="lazy" decoding="async" width="500" height="375">
+          <img src="img/servicio-manicura.jpg" alt="Manicura realizada en un centro de estética" loading="lazy" decoding="async" width="500" height="375">
           <h3>Manicura & Pedicura</h3>
           <p>Esmaltado tradicional o semipermanente, cuidado de cutículas incluido.</p>
           <span class="menu-card__price">Desde $6.500</span>
@@ -195,7 +161,7 @@
         </article>
 
         <article class="menu-card reveal">
-          <img src="img/servicio-depilacion.jpg" alt="Sala de depilación de Alma Estética" loading="lazy" decoding="async" width="500" height="375">
+          <img src="img/servicio-depilacion.jpg" alt="Equipo de depilación" loading="lazy" decoding="async" width="500" height="375">
           <h3>Depilación</h3>
           <p>Cera tibia o depilación definitiva, con productos para piel sensible.</p>
           <span class="menu-card__price">Desde $5.000</span>
@@ -246,7 +212,7 @@
 
       <div class="gallery__grid" id="gallery-grid">
         <button class="gallery__item reveal" data-full="img/galeria-01.jpg">
-          <img src="img/galeria-01.jpg" alt="Recepción de Alma Estética & Spa" loading="lazy" decoding="async" width="600" height="600">
+          <img src="img/galeria-01.jpg" alt="Recepción de un centro de estética" loading="lazy" decoding="async" width="600" height="600">
         </button>
         <button class="gallery__item reveal" data-full="img/galeria-02.jpg">
           <img src="img/galeria-02.jpg" alt="Sala de manicura" loading="lazy" decoding="async" width="600" height="600">
@@ -265,7 +231,7 @@
         </button>
       </div>
 
-      <!-- Lightbox: se conecta con JavaScript en Etapa 4 -->
+      <!-- Lightbox de la galería -->
       <div class="lightbox" id="lightbox" aria-hidden="true">
         <button class="lightbox__close" id="lightbox-close" aria-label="Cerrar imagen ampliada">&times;</button>
         <img src="" alt="" id="lightbox-image">
@@ -276,95 +242,88 @@
          TESTIMONIOS
          ====================================== -->
     <section class="testimonials">
-      <p class="section-label">Opiniones</p>
-      <h2>Lo que dicen nuestras clientas</h2>
+      <p class="section-label">Opiniones de ejemplo</p>
+      <h2>Así podría sentirse la experiencia.</h2>
 
       <div class="testimonials__grid">
         <blockquote class="testimonial-card reveal">
           <p class="testimonial-card__rating" aria-label="5 de 5 estrellas">★★★★★</p>
           <p class="testimonial-card__text">
-            "Reservé el turno por WhatsApp en dos minutos y llegué sin esperar nada. Como tiene que ser."
+            "La reserva fue simple y pude elegir el horario que mejor me quedaba."
           </p>
-          <footer class="testimonial-card__author">— Valentina Cruz</footer>
+          <footer class="testimonial-card__author">— Testimonio de ejemplo</footer>
         </blockquote>
 
         <blockquote class="testimonial-card reveal">
           <p class="testimonial-card__rating" aria-label="5 de 5 estrellas">★★★★★</p>
           <p class="testimonial-card__text">
-            "El facial me dejó la piel increíble y la atención fue súper personalizada."
+            "Encontré todos los servicios en un solo lugar y la atención fue muy personalizada."
           </p>
-          <footer class="testimonial-card__author">— Agustina Ríos</footer>
+          <footer class="testimonial-card__author">— Testimonio de ejemplo</footer>
         </blockquote>
 
         <blockquote class="testimonial-card reveal">
           <p class="testimonial-card__rating" aria-label="4 de 5 estrellas">★★★★☆</p>
           <p class="testimonial-card__text">
-            "Ambiente muy relajado y buena variedad de servicios. Ya tengo mi próximo turno reservado."
+            "El ambiente fue relajado y pude volver a reservar mi próximo turno."
           </p>
-          <footer class="testimonial-card__author">— Lucía Fernández</footer>
+          <footer class="testimonial-card__author">— Testimonio de ejemplo</footer>
         </blockquote>
       </div>
     </section>
 
     <!-- ======================================
-         RESERVAR TURNO
-         Formulario que arma un mensaje de WhatsApp con los datos
-         cargados — no hay calendario en tiempo real ni backend: es
-         un sitio estático. El negocio confirma el turno manualmente
-         por WhatsApp al recibir el mensaje. Ver script.js para la
-         lógica y el README para la explicación completa.
+         TURNOS
+         Turnos verificados y sincronizados por el backend y Google Calendar.
          ====================================== -->
     <section class="booking" id="turnos">
-      <p class="section-label">Reservá online</p>
-      <h2>Elegí día, horario y servicio</h2>
-      <p class="booking__intro">
-        Completá el formulario y te vamos a redirigir a WhatsApp con todo
-        ya cargado — solo tenés que confirmar el envío.
-      </p>
-
-      <form class="booking__form reveal" id="booking-form" novalidate>
-        <div class="booking__field">
-          <label for="booking-name">Nombre</label>
-          <input type="text" id="booking-name" name="name" required autocomplete="name">
-        </div>
-
-        <div class="booking__field">
-          <label for="booking-service">Servicio</label>
-          <select id="booking-service" name="service" required>
-            <option value="" disabled selected>Elegí un servicio</option>
-            <option value="Manicura & Pedicura">Manicura & Pedicura</option>
-            <option value="Depilación">Depilación</option>
-            <option value="Tratamientos faciales">Tratamientos faciales</option>
-            <option value="Masajes & Spa">Masajes & Spa</option>
-            <option value="Maquillaje">Maquillaje</option>
-            <option value="Color y Peinado">Color y Peinado</option>
-            <option value="Otro / Consultar">Otro / Consultar</option>
-          </select>
-        </div>
-
-        <div class="booking__field">
-          <label for="booking-date">Fecha preferida</label>
-          <input type="date" id="booking-date" name="date" required>
-        </div>
-
-        <div class="booking__field">
-          <label for="booking-time">Horario preferido</label>
-          <select id="booking-time" name="time" required>
-            <option value="" disabled selected>Elegí un horario</option>
-            <option value="Mañana (9 a 13 hs)">Mañana (9 a 13 hs)</option>
-            <option value="Tarde (14 a 19 hs)">Tarde (14 a 19 hs)</option>
-          </select>
-        </div>
-
-        <div class="booking__field booking__field--full">
-          <label for="booking-notes">Comentario (opcional)</label>
-          <textarea id="booking-notes" name="notes" rows="3" placeholder="Alguna aclaración o preferencia de profesional"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn--primary booking__submit">
-          Reservar por WhatsApp
-        </button>
-      </form>
+      <div class="booking__content">
+        <p class="section-label">Tu momento, a un clic</p>
+        <h2>Encontrá el horario ideal para vos.</h2>
+        <p class="booking__intro">
+          Consultá los días y horarios disponibles en tiempo real y reservá directamente en la agenda del centro.
+        </p>
+        <form class="booking__form" id="booking-form">
+          <div class="booking__field">
+            <label for="booking-name">Nombre</label>
+            <input id="booking-name" name="name" required minlength="2" maxlength="100" autocomplete="name">
+          </div>
+          <div class="booking__field">
+            <label for="booking-contact">Teléfono de contacto</label>
+            <input id="booking-contact" name="contact" required minlength="6" maxlength="50" type="tel" autocomplete="tel">
+          </div>
+          <div class="booking__field">
+            <label for="booking-service">Servicio</label>
+            <select id="booking-service" name="service" required>
+              <option value="" disabled selected>Elegí un servicio</option>
+              <option>Manicura & Pedicura</option>
+              <option>Depilación</option>
+              <option>Tratamientos faciales</option>
+              <option>Masajes & Spa</option>
+              <option>Maquillaje</option>
+              <option>Color y Peinado</option>
+            </select>
+          </div>
+          <div class="booking__field">
+            <label for="booking-date">Día</label>
+            <input id="booking-date" name="date" type="date" required>
+          </div>
+          <div class="booking__field">
+            <label for="booking-time">Horarios disponibles</label>
+            <select id="booking-time" name="time" required disabled>
+              <option value="">Primero elegí servicio y día</option>
+            </select>
+          </div>
+          <div class="booking__field booking__field--full">
+            <label for="booking-notes">Comentario (opcional)</label>
+            <textarea id="booking-notes" name="notes" maxlength="1000" rows="3" placeholder="Contanos si necesitás aclarar algo"></textarea>
+          </div>
+          <p class="booking__feedback booking__field--full" id="booking-feedback" role="status" aria-live="polite"></p>
+          <button type="submit" class="btn btn--primary booking__submit" id="booking-submit" disabled>
+            Confirmar turno
+          </button>
+        </form>
+      </div>
     </section>
 
     <!-- ======================================
@@ -378,11 +337,11 @@
         <dl class="location__details">
           <div>
             <dt>Dirección</dt>
-            <dd data-config-text="address">Av. Cabildo 2340, Buenos Aires</dd>
+            <dd data-config-text="address">Agregá la dirección del centro</dd>
           </div>
           <div>
             <dt>Horarios</dt>
-            <dd data-config-text="hours">Mar. a Sáb. de 9:00 a 19:00 hs</dd>
+            <dd data-config-text="hours">Editá los días y horarios de atención</dd>
           </div>
           <div>
             <dt>Teléfono</dt>
@@ -390,7 +349,7 @@
           </div>
           <div>
             <dt>Email</dt>
-            <dd><a href="mailto:hola@almaestetica.com.ar" data-config-href="emailHref" data-config-text="email">hola@almaestetica.com.ar</a></dd>
+            <dd><a href="mailto:hola@tudominio.com" data-config-href="emailHref" data-config-text="email">hola@tudominio.com</a></dd>
           </div>
         </dl>
 
@@ -402,7 +361,7 @@
       <div class="location__map reveal">
         <!-- El mapa se reemplaza fácilmente cambiando el src del iframe -->
         <iframe
-          title="Mapa de ubicación de Alma Estética & Spa"
+          title="Mapa de ubicación del centro de estética"
           src="https://www.google.com/maps?q=Buenos+Aires&output=embed"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
@@ -418,7 +377,7 @@
   <footer class="site-footer">
     <div class="footer__top">
       <div class="footer__brand">
-        <p class="footer__logo" data-config-text="businessName">Alma Estética & Spa</p>
+        <p class="footer__logo" data-config-text="businessName">Tu Estética</p>
         <p data-config-text="description">Tu momento, sin apuro.</p>
       </div>
 
@@ -430,22 +389,23 @@
           <li><a href="#galeria">Galería</a></li>
           <li><a href="#turnos">Turnos</a></li>
           <li><a href="#ubicacion">Ubicación</a></li>
+          <li><a href="admin.html">Panel privado del negocio</a></li>
         </ul>
       </nav>
 
       <div class="footer__contact">
-        <p data-config-text="address">Av. Cabildo 2340, Buenos Aires</p>
+        <p data-config-text="address">Agregá la dirección del centro</p>
         <p><a href="tel:+541100000000" data-config-href="phoneHref" data-config-text="phone">+54 11 0000-0000</a></p>
-        <p><a href="mailto:hola@almaestetica.com.ar" data-config-href="emailHref" data-config-text="email">hola@almaestetica.com.ar</a></p>
+        <p><a href="mailto:hola@tudominio.com" data-config-href="emailHref" data-config-text="email">hola@tudominio.com</a></p>
         <div class="footer__social">
-          <a href="#" aria-label="Instagram de Alma Estética & Spa" data-config-href="instagram" data-config-aria-template="Instagram de {name}">Instagram</a>
-          <a href="#" aria-label="Facebook de Alma Estética & Spa" data-config-href="facebook" data-config-aria-template="Facebook de {name}">Facebook</a>
+          <a href="#" aria-label="Instagram de Tu Estética" data-config-href="instagram" data-config-aria-template="Instagram de {name}">Instagram</a>
+          <a href="#" aria-label="Facebook de Tu Estética" data-config-href="facebook" data-config-aria-template="Facebook de {name}">Facebook</a>
         </div>
       </div>
     </div>
 
     <div class="footer__bottom">
-      <p id="footer-copyright">&copy; 2026 Alma Estética & Spa. Todos los derechos reservados.</p>
+      <p id="footer-copyright">&copy; 2026 Tu Estética. Todos los derechos reservados.</p>
       <a href="#" class="almate-signature" aria-label="Sitio construido con el sistema ALMATE">
         <span class="almate-signature__mark" aria-hidden="true"></span>
         Built with ALMATE

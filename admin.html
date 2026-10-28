@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Panel del negocio | Tu Estética</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-page">
+  <header class="site-header">
+    <div class="header__inner admin-header">
+      <a href="index.html" class="header__logo" data-config-text="businessName">Tu Estética</a>
+      <a class="admin-back-link" href="index.html">Volver al sitio</a>
+    </div>
+  </header>
+  <main class="admin-main">
+    <section class="admin-heading">
+      <div>
+        <p class="section-label">Administración</p>
+        <h1>Panel del negocio</h1>
+        <p>Gestioná turnos y consultá tu agenda de Google Calendar.</p>
+      </div>
+      <span class="admin-account-tag" id="admin-account-badge" hidden>CUENTA AUTORIZADA</span>
+    </section>
+
+    <section class="admin-card admin-login-card" id="admin-login">
+      <p class="section-label">Acceso privado</p>
+      <h2>Ingresá con Google</h2>
+      <p>Solo las cuentas que figuran en la lista de administradores del servidor pueden entrar.</p>
+      <p class="admin-login-error" id="admin-login-error" role="alert" hidden></p>
+      <a class="btn btn--primary" id="admin-login-button" href="/auth/google">Continuar con Google</a>
+    </section>
+
+    <div id="admin-dashboard" hidden>
+      <aside class="admin-calendar-notice" id="admin-calendar-status" role="status">
+        <strong>Verificando conexión con Google Calendar…</strong>
+      </aside>
+      <div class="admin-toolbar">
+        <p>Sesión: <strong id="admin-signed-in-email"></strong></p>
+        <div class="admin-toolbar__actions">
+          <button type="button" class="btn btn--secondary" id="admin-disconnect-calendar" hidden>Desconectar Calendar</button>
+          <button type="button" class="btn btn--secondary" id="admin-logout">Cerrar sesión</button>
+        </div>
+      </div>
+      <aside class="admin-calendar-notice" id="admin-calendar-warning" hidden>
+        <strong>Conectá la cuenta que administra el calendario.</strong>
+        <span>Se solicitará acceso a los eventos de esa agenda para consultar disponibilidad y sincronizar reservas. El token se cifra en el servidor.</span>
+        <a class="btn btn--primary" id="admin-connect-calendar" href="/auth/calendar">Conectar Google Calendar</a>
+      </aside>
+      <p class="admin-page-error" id="admin-page-error" role="alert" hidden></p>
+
+      <section class="admin-stats" aria-label="Resumen de turnos">
+        <article class="admin-stat"><span>Turnos de hoy</span><strong id="admin-stat-today">0</strong></article>
+        <article class="admin-stat"><span>Pendientes</span><strong id="admin-stat-pending">0</strong></article>
+        <article class="admin-stat"><span>Próximos 7 días</span><strong id="admin-stat-week">0</strong></article>
+      </section>
+
+      <section class="admin-layout">
+        <div class="admin-card admin-calendar-card">
+          <div class="admin-card-heading">
+            <div>
+              <p class="section-label">Agenda en vivo</p>
+              <h2 id="admin-month-label">Calendario</h2>
+            </div>
+            <div class="admin-calendar-nav">
+              <button type="button" class="admin-icon-button" id="admin-prev-month" aria-label="Mes anterior">&larr;</button>
+              <button type="button" class="admin-icon-button" id="admin-next-month" aria-label="Mes siguiente">&rarr;</button>
+            </div>
+          </div>
+          <div class="admin-calendar-grid" id="admin-calendar-grid" aria-label="Calendario mensual"></div>
+          <div class="admin-calendar-legend"><span></span> Día con eventos</div>
+          <a href="#" id="admin-google-calendar" class="admin-google-link" target="_blank" rel="noopener noreferrer" hidden>Abrir Google Calendar</a>
+        </div>
+
+        <div class="admin-card admin-appointments-card">
+          <div class="admin-card-heading">
+            <div>
+              <p class="section-label">Turnos del día</p>
+              <h2 id="admin-selected-date">Seleccioná una fecha</h2>
+            </div>
+            <button type="button" class="btn btn--primary admin-add-button" id="admin-add-appointment" disabled>+ Agregar turno</button>
+          </div>
+          <div class="admin-appointment-list" id="admin-appointment-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="admin-card admin-business-card">
+        <div class="admin-card-heading">
+          <div>
+            <p class="section-label">Información configurable</p>
+            <h2>Datos del negocio</h2>
+          </div>
+        </div>
+        <dl class="admin-business-details">
+          <div><dt>Nombre</dt><dd data-config-text="businessName">Tu Estética</dd></div>
+          <div><dt>Teléfono</dt><dd data-config-text="phone">+54 11 0000-0000</dd></div>
+          <div><dt>Email público</dt><dd data-config-text="email">hola@tudominio.com</dd></div>
+          <div><dt>Dirección</dt><dd data-config-text="address">Agregá la dirección del centro</dd></div>
+          <div><dt>Horarios de atención</dt><dd data-config-text="hours">Editá los días y horarios de atención</dd></div>
+        </dl>
+        <p class="admin-config-hint">Estos datos públicos se cambian en <code>SITE_CONFIG</code>. Los emails autorizados y los ajustes del calendario se configuran en el archivo privado <code>.env</code> del servidor.</p>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="admin-dialog" id="admin-appointment-dialog">
+    <form id="admin-appointment-form">
+      <div class="admin-card-heading">
+        <div>
+          <p class="section-label">Google Calendar</p>
+          <h2 id="admin-dialog-title">Agregar turno</h2>
+        </div>
+        <button type="button" class="admin-icon-button" id="admin-dialog-close" aria-label="Cerrar">&times;</button>
+      </div>
+      <input type="hidden" id="admin-appointment-id">
+      <label>Nombre<input id="admin-client-name" name="name" required minlength="2" maxlength="100" autocomplete="name"></label>
+      <label>Teléfono o contacto<input id="admin-client-contact" name="contact" required minlength="6" maxlength="50" autocomplete="tel"></label>
+      <label>Servicio<select id="admin-service" name="service" required></select></label>
+      <div class="admin-dialog-row">
+        <label>Fecha<input id="admin-appointment-date" name="date" type="date" required></label>
+        <label>Hora<input id="admin-appointment-time" name="time" type="time" required step="900"></label>
+      </div>
+      <label>Notas<textarea id="admin-appointment-notes" name="notes" maxlength="1000" rows="3"></textarea></label>
+      <label>Estado<select id="admin-appointment-status" name="status"><option value="confirmed">Confirmado</option><option value="pending">Pendiente</option></select></label>
+      <p class="admin-dialog-error" id="admin-dialog-error" role="alert" hidden></p>
+      <div class="admin-dialog-actions">
+        <button type="button" class="btn btn--secondary" id="admin-dialog-cancel">Cancelar</button>
+        <button type="submit" class="btn btn--primary" id="admin-dialog-save">Guardar turno</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
